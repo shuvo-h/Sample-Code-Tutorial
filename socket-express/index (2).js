@@ -1,17 +1,35 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import logo from './logo.svg';
+import './App.css';
+import { io } from "socket.io-client";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+function App() {
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+  const socket = io("ws://localhost:5000");
+
+socket.on("connect", () => {
+  // either with send()
+  socket.send("Hello!");
+
+  // or with emit() and custom event names
+  socket.emit("salutations", "Hello!", { "mr": "john" }, Uint8Array.from([1, 2, 3, 4]));
+});
+
+// handle the event sent with socket.send()
+socket.on("message", data => {
+  console.log(data);
+});
+
+// handle the event sent with socket.emit()
+socket.on("greetings", (elem1, elem2, elem3) => {
+  console.log(elem1, elem2, elem3);
+});
+
+  return (
+    <div className="App">
+      
+      
+    </div>
+  );
+}
+
+export default App;
